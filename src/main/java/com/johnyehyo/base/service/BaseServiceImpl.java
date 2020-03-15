@@ -15,7 +15,7 @@ public class BaseServiceImpl implements BaseService {
         try {
             Thread.sleep(1000);
             System.out.println(user);
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("处理失败");
             throw new RuntimeException("处理业务异常");

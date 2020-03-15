@@ -25,11 +25,12 @@
 
     -->
     <rabbit:queue id="redpackqueue" name="SpringRabbit-RedPack-Queue" durable="true" auto-delete="false" exclusive="false">
-        <rabbit:queue-arguments>
-            <entry key="x-expires">
-                <value type="java.lang.Integer">10000</value>
-            </entry>
-        </rabbit:queue-arguments>
+<!--        <rabbit:queue-arguments>-->
+<!--            &lt;!&ndash;   当前队列在指定时间未被访问将被删除         &ndash;&gt;-->
+<!--            <entry key="x-expires">-->
+<!--                <value type="java.lang.Integer">10000</value>-->
+<!--            </entry>-->
+<!--        </rabbit:queue-arguments>-->
     </rabbit:queue>
 
     <!--
@@ -54,8 +55,16 @@
     <!-- acknowledge：auto 自动确认(默认), manual手动确认  -->
     <!-- concurrency：并发数量 ，设置的是对每个listener在初始化的时候设置的并发消费者的个数-->
     <!-- prefetch 是每次从一次性从broker里面取的待消费的消息的个数 -->
+<!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">-->
+<!--        <rabbit:listener queues="redpackqueue" ref="messageConsumer" />-->
+<!--    </rabbit:listener-container>-->
+
     <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">
         <rabbit:listener queues="redpackqueue" ref="messageConsumer2" />
+    </rabbit:listener-container>
+
+    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">
+        <rabbit:listener queues="redpackqueue" ref="messageConsumer3" />
     </rabbit:listener-container>
 
 
