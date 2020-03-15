@@ -1,10 +1,15 @@
 package com.johnyehyo.base.entity;
 
+import java.io.Serializable;
+
 /**
  * @author JohnYehyo
  * @date 2020-3-12
  */
-public class UserEntity {
+public class UserEntity implements Serializable {
+
+
+    private static final long serialVersionUID = 7829911036115686402L;
 
     private String username;
     private String password;

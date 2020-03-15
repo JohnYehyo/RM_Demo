@@ -16,17 +16,18 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * 消息消费者 direct模式 自动确认
+ *
  * @author JohnYehyo
  * @date 2020-3-12
  */
 @Service
-public class MessageConsumer{
+public class MessageConsumer implements MessageListener {
 
     @Autowired
     private BaseService baseService;
 
-    private static final String QUEUE = "loginKey";
-    @RabbitListener(queues = QUEUE)
+
+    @Override
     public void onMessage(Message message) {
         try {
             String messages = new String(message.getBody(), "UTF-8");
@@ -43,7 +44,7 @@ public class MessageConsumer{
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
     }
