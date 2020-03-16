@@ -33,25 +33,25 @@
         <!--        </rabbit:queue-arguments>-->
     </rabbit:queue>
 
-    <rabbit:queue name="fanout-queue" durable="true" auto-delete="false"
-                  exclusive="false">
-        <!--        <rabbit:queue-arguments>-->
-        <!--            &lt;!&ndash;   当前队列在指定时间未被访问将被删除         &ndash;&gt;-->
-        <!--            <entry key="x-expires">-->
-        <!--                <value type="java.lang.Integer">10000</value>-->
-        <!--            </entry>-->
-        <!--        </rabbit:queue-arguments>-->
-    </rabbit:queue>
+<!--    <rabbit:queue name="fanout-queue" durable="true" auto-delete="false"-->
+<!--                  exclusive="false">-->
+<!--        &lt;!&ndash;        <rabbit:queue-arguments>&ndash;&gt;-->
+<!--        &lt;!&ndash;            &lt;!&ndash;   当前队列在指定时间未被访问将被删除         &ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;            <entry key="x-expires">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <value type="java.lang.Integer">10000</value>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </entry>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </rabbit:queue-arguments>&ndash;&gt;-->
+<!--    </rabbit:queue>-->
 
-    <rabbit:queue name="topic-queue" durable="true" auto-delete="false"
-                  exclusive="false">
-        <!--        <rabbit:queue-arguments>-->
-        <!--            &lt;!&ndash;   当前队列在指定时间未被访问将被删除         &ndash;&gt;-->
-        <!--            <entry key="x-expires">-->
-        <!--                <value type="java.lang.Integer">10000</value>-->
-        <!--            </entry>-->
-        <!--        </rabbit:queue-arguments>-->
-    </rabbit:queue>
+<!--    <rabbit:queue name="topic-queue" durable="true" auto-delete="false"-->
+<!--                  exclusive="false">-->
+<!--        &lt;!&ndash;        <rabbit:queue-arguments>&ndash;&gt;-->
+<!--        &lt;!&ndash;            &lt;!&ndash;   当前队列在指定时间未被访问将被删除         &ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;            <entry key="x-expires">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <value type="java.lang.Integer">10000</value>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </entry>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </rabbit:queue-arguments>&ndash;&gt;-->
+<!--    </rabbit:queue>-->
 
     <!--
         绑定队列
@@ -67,27 +67,26 @@
         </rabbit:bindings>
     </rabbit:direct-exchange>
 
-    <!-- Fanout 扇出，顾名思义，就像广播。如果使用fanout类型的exchange，
-    那么routing key就不重要了。因为凡是绑定到这个exchange的queue，都会受到消息。 -->
-    <rabbit:fanout-exchange name="fanout_exchange" durable="true" auto-delete="false"
-                            id="delayed_message_exchange">
-        <rabbit:bindings>
-            <rabbit:binding queue="fanout-queue"/>
-        </rabbit:bindings>
-    </rabbit:fanout-exchange>
+<!--    &lt;!&ndash; Fanout 扇出，顾名思义，就像广播。如果使用fanout类型的exchange，-->
+<!--    那么routing key就不重要了。因为凡是绑定到这个exchange的queue，都会受到消息。 &ndash;&gt;-->
+<!--    <rabbit:fanout-exchange name="fanout_exchange" durable="true" auto-delete="false"-->
+<!--                            id="delayed_message_exchange">-->
+<!--        <rabbit:bindings>-->
+<!--            <rabbit:binding queue="fanout-queue"/>-->
+<!--        </rabbit:bindings>-->
+<!--    </rabbit:fanout-exchange>-->
 
 
     <!--  发送端不是按固定的routing key发送消息，而是按字符串“匹配”发送，接收端同样如此  -->
-    <rabbit:topic-exchange name="topic-exchange" durable="true" auto-declare="true" auto-delete="false">
-        <rabbit:bindings>
-            <rabbit:binding queue="topic-queue" pattern="user.#"></rabbit:binding>
-        </rabbit:bindings>
-    </rabbit:topic-exchange>
+<!--    <rabbit:topic-exchange name="topic-exchange" durable="true" auto-declare="true" auto-delete="false">-->
+<!--        <rabbit:bindings>-->
+<!--            <rabbit:binding queue="topic-queue" pattern="user.#"></rabbit:binding>-->
+<!--        </rabbit:bindings>-->
+<!--    </rabbit:topic-exchange>-->
 
 
     <!-- spring template声明 -->
-    <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory"
-                     exchange="SpringRabbit-RedPack-Exchange"></rabbit:template>
+    <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory"></rabbit:template>
 
     <!-- 消费者  -->
     <!-- 队列监听-->
@@ -98,17 +97,27 @@
 <!--        <rabbit:listener queues="direct-queue" ref="messageConsumer"/>-->
 <!--    </rabbit:listener-container>-->
 
-    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">
-        <rabbit:listener queues="direct-queue" ref="messageConsumer2"/>
-    </rabbit:listener-container>
+<!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">-->
+<!--        <rabbit:listener queues="direct-queue" ref="messageConsumer2"/>-->
+<!--    </rabbit:listener-container>-->
 
-    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">
-        <rabbit:listener queues="direct-queue" ref="messageConsumer3"/>
-    </rabbit:listener-container>
+<!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">-->
+<!--        <rabbit:listener queues="direct-queue" ref="messageConsumer3"/>-->
+<!--    </rabbit:listener-container>-->
 
 <!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">-->
 <!--        <rabbit:listener queues="topic-queue" ref="messageConsumer4"/>-->
 <!--    </rabbit:listener-container>-->
 
+    <!-- 注解监听 必须要加 -->
+    <rabbit:annotation-driven />
+
+    <!-- 必须要加-->
+    <bean id="rabbitListenerContainerFactory"
+          class="org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="concurrentConsumers" value="3" />
+        <property name="maxConcurrentConsumers" value="10" />
+    </bean>
 
 </beans>

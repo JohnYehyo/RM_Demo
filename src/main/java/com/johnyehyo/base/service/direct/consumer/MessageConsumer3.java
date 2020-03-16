@@ -51,7 +51,7 @@ public class MessageConsumer3{
 //        }
 //    }
 
-//    @RabbitListener(queues="direct-queue-key")
+    @RabbitListener(queues="direct-queue")
     @RabbitHandler
     public void onMessage(@Payload UserEntity body, @Headers Map<String, Object> headers, Channel channel) throws Exception {
         long tag = (long) headers.get(AmqpHeaders.DELIVERY_TAG);

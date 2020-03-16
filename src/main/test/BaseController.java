@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -55,9 +54,11 @@ public class BaseController {
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(UUID.randomUUID().toString().replace("_", ""));
         UserEntity user = new UserEntity();
-        user.setUsername("测试王" + UUID.randomUUID().toString().replace("_", ""));
         user.setPassword("123456");
-        rabbitTemplate.convertAndSend("topic-exchange", "user.add", user, correlationData);
+        for (int i = 0; i < 30; i++) {
+            user.setUsername("测试张" + UUID.randomUUID().toString().replace("_", ""));
+            rabbitTemplate.convertAndSend("topic-exchange", "user.add", user, correlationData);
+        }
         System.out.println("执行成功");
     }
 }

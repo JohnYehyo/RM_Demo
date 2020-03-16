@@ -20,17 +20,17 @@ import java.util.Map;
  * @date 2020-3-12
  */
 @Component
-public class MessageConsumer4 {
+public class MessageConsumer5 {
 
     @RabbitListener(bindings = @QueueBinding(
             exchange = @Exchange(value = "topic-exchange", durable = "true", type = ExchangeTypes.TOPIC),
             value = @Queue(value = "topic-queue", durable = "true"),
-            key = "user.#"
+            key = "#.delete,user.add"
     ))
     @RabbitHandler
     public void onMessage(@Payload UserEntity body, @Headers Map<String, Object> headers, Channel channel){
         Long tag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
-        System.out.println("[TOPIC 1]接收到消息: " + body );
+        System.out.println("[TOPIC 2]接收到消息: " + body );
         try {
             channel.basicAck(tag, false);
         } catch (IOException e) {
@@ -39,6 +39,7 @@ public class MessageConsumer4 {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            e.printStackTrace();
         }
     }
 }
