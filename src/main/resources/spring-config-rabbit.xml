@@ -10,7 +10,8 @@
     <!-- cache-mode，缓存连接模式，默认值为CHANNEL(单个connection连接，连接之后关闭，自动销毁) -->
     <rabbit:connection-factory id="connectionFactory" host="${mq.host}" port="${mq.port}"
                                username="${mq.username}" password="${mq.password}" virtual-host="${mq.vhost}"
-                               channel-cache-size="${mq.channelCacheSize}" cache-mode="CHANNEL"/>
+                               channel-cache-size="${mq.channelCacheSize}" cache-mode="CHANNEL"
+                               publisher-confirms="${mq.publisher-confirms}"/>
     <rabbit:admin connection-factory="connectionFactory"/>
 
     <!--
@@ -33,25 +34,25 @@
         <!--        </rabbit:queue-arguments>-->
     </rabbit:queue>
 
-<!--    <rabbit:queue name="fanout-queue" durable="true" auto-delete="false"-->
-<!--                  exclusive="false">-->
-<!--        &lt;!&ndash;        <rabbit:queue-arguments>&ndash;&gt;-->
-<!--        &lt;!&ndash;            &lt;!&ndash;   当前队列在指定时间未被访问将被删除         &ndash;&gt;&ndash;&gt;-->
-<!--        &lt;!&ndash;            <entry key="x-expires">&ndash;&gt;-->
-<!--        &lt;!&ndash;                <value type="java.lang.Integer">10000</value>&ndash;&gt;-->
-<!--        &lt;!&ndash;            </entry>&ndash;&gt;-->
-<!--        &lt;!&ndash;        </rabbit:queue-arguments>&ndash;&gt;-->
-<!--    </rabbit:queue>-->
+    <!--    <rabbit:queue name="fanout-queue" durable="true" auto-delete="false"-->
+    <!--                  exclusive="false">-->
+    <!--        &lt;!&ndash;        <rabbit:queue-arguments>&ndash;&gt;-->
+    <!--        &lt;!&ndash;            &lt;!&ndash;   当前队列在指定时间未被访问将被删除         &ndash;&gt;&ndash;&gt;-->
+    <!--        &lt;!&ndash;            <entry key="x-expires">&ndash;&gt;-->
+    <!--        &lt;!&ndash;                <value type="java.lang.Integer">10000</value>&ndash;&gt;-->
+    <!--        &lt;!&ndash;            </entry>&ndash;&gt;-->
+    <!--        &lt;!&ndash;        </rabbit:queue-arguments>&ndash;&gt;-->
+    <!--    </rabbit:queue>-->
 
-<!--    <rabbit:queue name="topic-queue" durable="true" auto-delete="false"-->
-<!--                  exclusive="false">-->
-<!--        &lt;!&ndash;        <rabbit:queue-arguments>&ndash;&gt;-->
-<!--        &lt;!&ndash;            &lt;!&ndash;   当前队列在指定时间未被访问将被删除         &ndash;&gt;&ndash;&gt;-->
-<!--        &lt;!&ndash;            <entry key="x-expires">&ndash;&gt;-->
-<!--        &lt;!&ndash;                <value type="java.lang.Integer">10000</value>&ndash;&gt;-->
-<!--        &lt;!&ndash;            </entry>&ndash;&gt;-->
-<!--        &lt;!&ndash;        </rabbit:queue-arguments>&ndash;&gt;-->
-<!--    </rabbit:queue>-->
+    <!--    <rabbit:queue name="topic-queue" durable="true" auto-delete="false"-->
+    <!--                  exclusive="false">-->
+    <!--        &lt;!&ndash;        <rabbit:queue-arguments>&ndash;&gt;-->
+    <!--        &lt;!&ndash;            &lt;!&ndash;   当前队列在指定时间未被访问将被删除         &ndash;&gt;&ndash;&gt;-->
+    <!--        &lt;!&ndash;            <entry key="x-expires">&ndash;&gt;-->
+    <!--        &lt;!&ndash;                <value type="java.lang.Integer">10000</value>&ndash;&gt;-->
+    <!--        &lt;!&ndash;            </entry>&ndash;&gt;-->
+    <!--        &lt;!&ndash;        </rabbit:queue-arguments>&ndash;&gt;-->
+    <!--    </rabbit:queue>-->
 
     <!--
         绑定队列
@@ -67,22 +68,22 @@
         </rabbit:bindings>
     </rabbit:direct-exchange>
 
-<!--    &lt;!&ndash; Fanout 扇出，顾名思义，就像广播。如果使用fanout类型的exchange，-->
-<!--    那么routing key就不重要了。因为凡是绑定到这个exchange的queue，都会受到消息。 &ndash;&gt;-->
-<!--    <rabbit:fanout-exchange name="fanout_exchange" durable="true" auto-delete="false"-->
-<!--                            id="delayed_message_exchange">-->
-<!--        <rabbit:bindings>-->
-<!--            <rabbit:binding queue="fanout-queue"/>-->
-<!--        </rabbit:bindings>-->
-<!--    </rabbit:fanout-exchange>-->
+    <!--    &lt;!&ndash; Fanout 扇出，顾名思义，就像广播。如果使用fanout类型的exchange，-->
+    <!--    那么routing key就不重要了。因为凡是绑定到这个exchange的queue，都会受到消息。 &ndash;&gt;-->
+    <!--    <rabbit:fanout-exchange name="fanout_exchange" durable="true" auto-delete="false"-->
+    <!--                            id="delayed_message_exchange">-->
+    <!--        <rabbit:bindings>-->
+    <!--            <rabbit:binding queue="fanout-queue"/>-->
+    <!--        </rabbit:bindings>-->
+    <!--    </rabbit:fanout-exchange>-->
 
 
     <!--  发送端不是按固定的routing key发送消息，而是按字符串“匹配”发送，接收端同样如此  -->
-<!--    <rabbit:topic-exchange name="topic-exchange" durable="true" auto-declare="true" auto-delete="false">-->
-<!--        <rabbit:bindings>-->
-<!--            <rabbit:binding queue="topic-queue" pattern="user.#"></rabbit:binding>-->
-<!--        </rabbit:bindings>-->
-<!--    </rabbit:topic-exchange>-->
+    <!--    <rabbit:topic-exchange name="topic-exchange" durable="true" auto-declare="true" auto-delete="false">-->
+    <!--        <rabbit:bindings>-->
+    <!--            <rabbit:binding queue="topic-queue" pattern="user.#"></rabbit:binding>-->
+    <!--        </rabbit:bindings>-->
+    <!--    </rabbit:topic-exchange>-->
 
 
     <!-- spring template声明 -->
@@ -93,31 +94,32 @@
     <!-- acknowledge：auto 自动确认(默认), manual手动确认  -->
     <!-- concurrency：并发数量 ，设置的是对每个listener在初始化的时候设置的并发消费者的个数-->
     <!-- prefetch 是每次从一次性从broker里面取的待消费的消息的个数 -->
-<!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto" concurrency="5" prefetch="5">-->
-<!--        <rabbit:listener queues="direct-queue" ref="messageConsumer"/>-->
-<!--    </rabbit:listener-container>-->
+    <!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto" concurrency="5" prefetch="5">-->
+    <!--        <rabbit:listener queues="direct-queue" ref="messageConsumer"/>-->
+    <!--    </rabbit:listener-container>-->
 
-<!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">-->
-<!--        <rabbit:listener queues="direct-queue" ref="messageConsumer2"/>-->
-<!--    </rabbit:listener-container>-->
+    <!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">-->
+    <!--        <rabbit:listener queues="direct-queue" ref="messageConsumer2"/>-->
+    <!--    </rabbit:listener-container>-->
 
-<!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">-->
-<!--        <rabbit:listener queues="direct-queue" ref="messageConsumer3"/>-->
-<!--    </rabbit:listener-container>-->
+    <!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">-->
+    <!--        <rabbit:listener queues="direct-queue" ref="messageConsumer3"/>-->
+    <!--    </rabbit:listener-container>-->
 
-<!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">-->
-<!--        <rabbit:listener queues="topic-queue" ref="messageConsumer4"/>-->
-<!--    </rabbit:listener-container>-->
+    <!--    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" concurrency="5" prefetch="5">-->
+    <!--        <rabbit:listener queues="topic-queue" ref="messageConsumer4"/>-->
+    <!--    </rabbit:listener-container>-->
 
     <!-- 注解监听 必须要加 -->
-    <rabbit:annotation-driven />
+    <rabbit:annotation-driven/>
 
     <!-- 必须要加-->
     <bean id="rabbitListenerContainerFactory"
           class="org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory">
-        <property name="connectionFactory" ref="connectionFactory" />
-        <property name="concurrentConsumers" value="3" />
-        <property name="maxConcurrentConsumers" value="10" />
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="concurrentConsumers" value="3"/>
+        <property name="maxConcurrentConsumers" value="10"/>
+        <property name="acknowledgeMode" value="MANUAL"/>
     </bean>
 
 </beans>
