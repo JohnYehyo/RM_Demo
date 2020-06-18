@@ -118,6 +118,28 @@ public class BaseController {
     }
 
     @Test
+    public void submitConfirm2() {
+        CorrelationData correlationData = new CorrelationData();
+        correlationData.setId(UUID.randomUUID().toString().replace("-", ""));
+        UserEntity user = new UserEntity();
+        user.setUsername("测试订单" + UUID.randomUUID().toString().replace("-", ""));
+        user.setPassword("123456");
+        rabbitTemplate.setConfirmCallback((correlation, ack, cause) -> {
+            System.out.println("correlationData--->" + correlation);
+            System.out.println(ack);
+            if (ack) {
+                System.out.println("正常投递回复...");
+                //后续执行其他业务...
+            } else {
+                System.out.println("投递异常....");
+                //后续记录等操作...
+            }
+        });
+        rabbitTemplate.convertAndSend("test-exchange", "test.add", user, correlationData);
+        System.out.println("执行成功");
+    }
+
+    @Test
     public void send(){
         confirmProducer.send();
     }

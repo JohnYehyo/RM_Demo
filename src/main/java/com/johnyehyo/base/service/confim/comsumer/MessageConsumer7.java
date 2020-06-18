@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.johnyehyo.base.entity.UserEntity;
 import com.johnyehyo.base.enums.RabbitResult;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.MessageProperties;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.amqp.support.AmqpHeaders;
@@ -23,12 +22,12 @@ import java.util.Map;
  * @date 2020-3-12
  */
 @Component
-public class MessageConsumer6 {
+public class MessageConsumer7 {
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "queue1", durable = "true"),
+            value = @Queue(value = "queue2", durable = "true"),
             exchange = @Exchange(value = "test-exchange", durable = "true", type = ExchangeTypes.TOPIC),
-            key = "order.*"
+            key = "test.*"
     ))
     @RabbitHandler
     public void onMessage(@Payload UserEntity body, @Headers Map<String, Object> headers, Channel channel) throws IOException {
@@ -44,7 +43,7 @@ public class MessageConsumer6 {
         byte[] bytes = mapper.writeValueAsBytes(body);
         RabbitResult rr = RabbitResult.RETRY;
         try {
-            System.out.println("[corfim111]接收到消息: " + body);
+            System.out.println("[corfim222]接收到消息: " + body);
             //后续业务处理...
             if(true){
                 //业务处理成功
