@@ -8,6 +8,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.UUID;
 
@@ -92,8 +93,9 @@ public class BaseController {
     /**
      * topic-corfim类型 使用@RabbitListener绑定和监听功能
      */
-    @RequestMapping(value = "submitConfirm")
-    public void submitConfirm() {
+    @RequestMapping(value = "submitConfirm", produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String submitConfirm() {
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(UUID.randomUUID().toString().replace("-", ""));
         UserEntity user = new UserEntity();
@@ -102,7 +104,8 @@ public class BaseController {
 //        两种皆可
 //        confirmProducer.send();
         rabbitTemplate.setConfirmCallback(confirmCallback);
-        rabbitTemplate.convertAndSend("topic-exchange", "order.add", user, correlationData);
+        rabbitTemplate.convertAndSend("test-exchange", "order.add", user, correlationData);
+        return "执行完毕";
     }
 
 

@@ -11,7 +11,8 @@
     <rabbit:connection-factory id="connectionFactory" host="${mq.host}" port="${mq.port}"
                                username="${mq.username}" password="${mq.password}" virtual-host="${mq.vhost}"
                                channel-cache-size="${mq.channelCacheSize}" cache-mode="CHANNEL"
-                               publisher-confirms="${mq.publisher-confirms}"/>
+                               publisher-confirms="${mq.publisher-confirms}"
+                               publisher-returns="${mq.publisher-returns}"/>
     <rabbit:admin connection-factory="connectionFactory"/>
 
     <!--

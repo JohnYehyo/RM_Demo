@@ -68,8 +68,8 @@ public class BaseController {
         correlationData.setId(UUID.randomUUID().toString().replace("-", ""));
         UserEntity user = new UserEntity();
         user.setPassword("123456");
-        for (int i = 0; i < 30; i++) {
-            user.setUsername("测试张" + UUID.randomUUID().toString().replace("-", ""));
+        for (int i = 0; i < 10; i++) {
+            user.setUsername("测试张" + i);
             rabbitTemplate.convertAndSend("topic-exchange", "user.add", user, correlationData);
         }
         System.out.println("执行成功");
@@ -113,7 +113,7 @@ public class BaseController {
                 //后续记录等操作...
             }
         });
-        rabbitTemplate.convertAndSend("topic-exchange", "order.add", user, correlationData);
+        rabbitTemplate.convertAndSend("test-exchange", "order.add", user, correlationData);
         System.out.println("执行成功");
     }
 
