@@ -3,6 +3,7 @@ package com.johnyehyo.base.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.johnyehyo.base.entity.UserEntity;
+import com.johnyehyo.base.service.producer.MessageProducer;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class BaseController {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private MessageProducer messageProducer;
 
     @RequestMapping(value = "init")
     public String init() {
@@ -105,6 +108,22 @@ public class BaseController {
 //        confirmProducer.send();
         rabbitTemplate.setConfirmCallback(confirmCallback);
         rabbitTemplate.convertAndSend("test-exchange", "order.add", user, correlationData);
+        return "执行完毕";
+    }
+
+
+    /**
+     * 手动回复
+     * @return
+     */
+    @RequestMapping(value = "submitConfirm3", produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String submitConfirm3() {
+        UserEntity user = new UserEntity();
+        user.setUsername("测试订单" + UUID.randomUUID().toString().replace("-", ""));
+        user.setPassword("123456");
+        messageProducer.submitConfirm("test-exchange", "callback.item", user, UUID.randomUUID().toString().replace("-", ""));
+        System.out.println("执行成功");
         return "执行完毕";
     }
 

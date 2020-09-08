@@ -156,7 +156,7 @@ public class BaseController {
         UserEntity user = new UserEntity();
         user.setUsername("测试订单" + UUID.randomUUID().toString().replace("-", ""));
         user.setPassword("123456");
-        messageProducer.submitConfirm("test-exchange", "test.add", user, UUID.randomUUID().toString().replace("-", ""));
+        messageProducer.submitConfirm("test-exchange", "callback.item", user, UUID.randomUUID().toString().replace("-", ""));
         System.out.println("执行成功");
     }
 }

@@ -14,16 +14,16 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ConfirmCallback implements RabbitTemplate.ConfirmCallback {
-    private static final Logger logger = LoggerFactory.getLogger(ConfirmCallback.class);
 
 
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
         if (ack) {
-//            logger.info("投递成功correlationData--->" + correlationData);
+            System.out.println("投递成功correlationData--->" + correlationData);
         } else {
-            logger.error("投递失败correlationData--->" + correlationData);
-            logger.error("cause--->" + cause);
+            //业务处理
+            System.out.println("投递失败correlationData--->" + correlationData);
+            System.out.println("cause--->" + cause);
         }
     }
 }
