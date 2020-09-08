@@ -129,4 +129,15 @@ public class MessageProducerImpl implements MessageProducer {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void submitConfirm(String exchange, String routingKey, Object obj, String baseID) {
+        CorrelationData correlationData = new CorrelationData();
+        correlationData.setId(baseID);
+        try {
+            rabbitTemplate.convertAndSend(exchange, routingKey, obj, correlationData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

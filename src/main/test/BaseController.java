@@ -2,6 +2,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.johnyehyo.base.entity.UserEntity;
 import com.johnyehyo.base.service.confim.producer.ConfirmProducer;
+import com.johnyehyo.base.service.producer.MessageProducer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -25,6 +26,9 @@ public class BaseController {
 
     @Autowired
     private ConfirmProducer confirmProducer;
+
+    @Autowired
+    private MessageProducer messageProducer;
 
     /**
      * direct类型
@@ -142,5 +146,17 @@ public class BaseController {
     @Test
     public void send(){
         confirmProducer.send();
+    }
+
+    /**
+     * 手动回复
+     */
+    @Test
+    public void submitConfirm3() {
+        UserEntity user = new UserEntity();
+        user.setUsername("测试订单" + UUID.randomUUID().toString().replace("-", ""));
+        user.setPassword("123456");
+        messageProducer.submitConfirm("test-exchange", "test.add", user, UUID.randomUUID().toString().replace("-", ""));
+        System.out.println("执行成功");
     }
 }

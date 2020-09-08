@@ -75,4 +75,7 @@ public interface MessageProducer {
      */
     void sendMessage(Object message, String routingKey, String exchange, MessagePostProcessor messagePostProcessor, CorrelationData correlationDat) throws IOException;
 
+
+    void submitConfirm(String exchange, String routingKey, Object obj, String baseID);
+
 }

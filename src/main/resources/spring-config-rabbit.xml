@@ -88,7 +88,8 @@
 
 
     <!-- spring template声明 -->
-    <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory"></rabbit:template>
+    <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory" confirm-callback="confirmCallback"
+                     return-callback="returnCallback" mandatory="true"></rabbit:template>
 
     <!-- 消费者  -->
     <!-- 队列监听-->
